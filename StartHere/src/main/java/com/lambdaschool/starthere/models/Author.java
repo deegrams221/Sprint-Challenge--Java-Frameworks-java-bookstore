@@ -17,14 +17,13 @@ import java.util.List;
 // There is a many to many relationship between authors and books.
 // A book may have many authors while an author may write many books.
 
-
 // adding custom swagger documentation in models
 @ApiModel(value = "Authors", description = "The Authors Entity")
 
 @Loggable
 @Entity
-@Table(name = "authors")
-public class Authors
+@Table(name = "author")
+public class Author extends Auditable
 {
     // Fields
 
@@ -43,7 +42,7 @@ public class Authors
             value = "Author's First Name",
             required = true,
             example = "Alice")
-    private String firstname;
+    private String fname;
 
     // lastname
     // swagger documentation
@@ -51,77 +50,65 @@ public class Authors
             value = "Author's Last Name",
             required = true,
             example = "Cooper")
-    private String lastname;
+    private String lname;
 
-    // Many to many - authors to books
-    @ManyToMany(mappedBy = "authors")
-    @JsonIgnoreProperties("authors")
-    private List<Book> books = new ArrayList<>();
+    @OneToMany(mappedBy = "author",
+            cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("author")
+    private List<Wrote> wrote = new ArrayList<>();
 
     // default constructor
-    public Authors()
-    {
+    public Author() {
+
     }
 
-    // constructors
-    public Authors(String firstname, String lastname, List<Book> books)
-    {
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.books = books;
+    // constructor
+    public Author(String fname, String lname) {
+        this.fname = fname;
+        this.lname = lname;
     }
 
     // getters and setters
-    public long getAuthorid()
-    {
+    public long getAuthorid() {
         return authorid;
     }
 
-    public void setAuthorid(long authorid)
-    {
+    public void setAuthorid(long authorid) {
         this.authorid = authorid;
     }
 
-    public String getFirstname()
-    {
-        return firstname;
+    public String getFname() {
+        return fname;
     }
 
-    public void setFirstname(String firstname)
-    {
-        this.firstname = firstname;
+    public void setFname(String fname) {
+        this.fname = fname;
     }
 
-    public String getLastname()
-    {
-        return lastname;
-
+    public String getLname() {
+        return lname;
     }
 
-    public void setLastname(String lastname)
-    {
-        this.lastname = lastname;
+    public void setLname(String lname) {
+        this.lname = lname;
     }
 
-    public List<Book> getBooks()
-    {
-        return books;
+    public List<Wrote> getwrote() {
+        return wrote;
     }
 
-    public void setBooks(List<Book> books)
-    {
-        this.books = books;
+    public void setwrote(List<Wrote> wrote) {
+        this.wrote = wrote;
     }
 
     // toString
     @Override
-    public String toString()
-    {
-        return "Authors{" +
+    public String toString() {
+        return "Author{" +
                 "authorid=" + authorid +
-                ", firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", books=" + books +
+                ", fname='" + fname + '\'' +
+                ", lname='" + lname + '\'' +
+                ", wrote=" + wrote +
                 '}';
     }
 }

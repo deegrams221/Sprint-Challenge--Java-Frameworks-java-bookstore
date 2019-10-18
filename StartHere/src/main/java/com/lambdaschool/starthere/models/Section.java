@@ -1,7 +1,6 @@
 package com.lambdaschool.starthere.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.lambdaschool.starthere.logging.Loggable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -20,12 +19,12 @@ import java.util.List;
 // adding custom swagger documentation in models
 @ApiModel(value = "Section", description = "The Section Entity")
 
-@Loggable
 @Entity
-@Table(name = "sections")
+@Table(name = "section")
 public class Section extends Auditable
 {
-    // Fields
+
+// Fields
 
     // sectionid
     // swagger documentation
@@ -43,58 +42,62 @@ public class Section extends Auditable
             required = true,
             example = "Fiction")
     @Column(nullable = false)
-    private String sectionname;
+    private String name;
 
 
-    // one to many relationship between sections and books
-    @OneToMany(mappedBy = "section",
-            cascade = CascadeType.ALL)
-    @JsonIgnoreProperties(value = "section")
-    List<Book> books = new ArrayList<>();
+
+    @OneToMany(mappedBy = "section")
+    @JsonIgnoreProperties("sections")
+    private List<Book> books = new ArrayList<>();
 
     // default constructor
-    public Section()
-    {
+    public Section() {
+
     }
 
     // constructor
-    public Section(String sectionname, List<Book> books)
-    {
-        this.sectionname = sectionname;
+    public Section(String name) {
+        this.name = name;
+    }
+
+    // constructor
+    public Section(String name, List<Book> books) {
+        this.name = name;
         this.books = books;
     }
 
     // getters and setters
-    public long getSectionid()
-    {
+    public long getSectionid() {
         return sectionid;
     }
 
-    public void setSectionid(long sectionid)
-    {
+    public void setSectionid(long sectionid) {
         this.sectionid = sectionid;
     }
 
-    public String getSectionname()
-    {
-        return sectionname;
+    public String getName() {
+        return name;
     }
 
-    public void setSectionname(String sectionname)
-    {
-        this.sectionname = sectionname;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public List<Book> getBooks()
-    {
+    public List<Book> getBooks() {
         return books;
     }
 
-    public void setBooks(List<Book> books)
-    {
+    public void setBooks(List<Book> books) {
         this.books = books;
     }
 
     // toString
-
+    @Override
+    public String toString() {
+        return "Section{" +
+                "sectionid=" + sectionid +
+                ", name='" + name + '\'' +
+                ", books=" + books +
+                '}';
+    }
 }

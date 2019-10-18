@@ -1,85 +1,80 @@
 package com.lambdaschool.starthere.services;
 
+import com.lambdaschool.starthere.exceptions.ResourceNotFoundException;
+import com.lambdaschool.starthere.models.Author;
 import com.lambdaschool.starthere.models.Book;
+import com.lambdaschool.starthere.models.Wrote;
 import com.lambdaschool.starthere.repository.AuthorRepository;
 import com.lambdaschool.starthere.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
-import java.util.List;
 
 @Service(value = "bookService")
-public class BookServiceImpl implements BookService
-{
-    @Autowired
-    private BookRepository bookRepository;
+public class BookServiceImpl implements BookService{
 
     @Autowired
-    private AuthorRepository authorRepository;
+    private BookRepository bookRepos;
 
-    // findAll - paging and sorting
+    @Autowired
+    private AuthorRepository authorRepos;
+
     @Override
-    public List<Book> findAll(Pageable pageable)
-    {
-        List<Book> list = new ArrayList<>();
-        bookRepository.findAll(pageable).iterator()
-                .forEachRemaining(list::add);
+    public ArrayList<Book> findAll(Pageable pageable) {
+        ArrayList<Book> list = new ArrayList<>();
+        bookRepos.findAll(pageable).iterator().forEachRemaining(list::add);
         return list;
     }
 
-    // updateBook
-    @Transactional
     @Override
-    public Book updateBook(Book book, long id) {
-        Book currentBook = bookRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        if (book.getBooktitle() != null) {
-            currentBook.setBooktitle(book.getBooktitle());
+    public Book update(Book book, long id) {
+        Book currentBook = bookRepos.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(Long.toString(id)));
+
+        if (book.getTitle() != null)
+        {
+            currentBook.setTitle(book.getTitle());
         }
-        if (book.getISBN() != null) {
-            currentBook.setISBN(book.getISBN());
-        }
-        if (book.getAuthors() != null && book.getAuthors().size() > 0) {
-            currentBook.setAuthors(book.getAuthors());
-        }
-        if (book.getCopy() < 0) {
+        if (book.getCopy() != 0)
+        {
             currentBook.setCopy(book.getCopy());
         }
-
-        bookRepository.save(currentBook);
-        return currentBook;
-    }
-
-    // delete
-    @Override
-    public void delete(long id) {
-        if (bookRepository.findById(id).isPresent())
+        if (book.getISBN() != null)
         {
-            bookRepository.deleteById(id);
-        } else {
-            throw new EntityNotFoundException();
+            currentBook.setISBN(book.getISBN());
         }
 
+        return bookRepos.save(currentBook);
     }
 
-    // assignAuthor
-    @Transactional
     @Override
-    public void assignAuthor(long bookid, long authorid)
-    {
-        Book currentBook = bookRepository.findById(bookid)
-                .orElseThrow(EntityNotFoundException::new);
-        currentBook.getAuthors().add(authorRepository.findById(authorid)
-                .orElseThrow(EntityNotFoundException::new));
+    public void assignBookToAuthor(long bookid, long authorid) {
+        Book currentBook = bookRepos.findById(bookid)
+                .orElseThrow(() -> new ResourceNotFoundException(Long.toString(bookid)));
+
+        Author currentAuthor = authorRepos.findById(authorid)
+                .orElseThrow(() -> new ResourceNotFoundException(Long.toString(authorid)));
+
+        for(Wrote w: currentAuthor.getwrote())
+        {
+            if(w.getBook().getBookid() == bookid)
+            {
+                throw new ResourceNotFoundException("Book already assigned to author");
+            }
+        }
+        bookRepos.assignBookToAuthor(bookid, authorid);
     }
 
-    // save
     @Override
-    public void save(Book book)
-    {
-        bookRepository.save(book);
+    public void delete(long id) {
+        if (bookRepos.findById(id).isPresent())
+        {
+            bookRepos.deleteById(id);
+        } else
+        {
+            throw new ResourceNotFoundException(Long.toString(id));
+        }
     }
 }

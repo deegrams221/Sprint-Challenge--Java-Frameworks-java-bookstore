@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.lambdaschool</groupId>
-    <artifactId>sprint</artifactId>
+    <artifactId>starthere</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>sprint</name>
+    <name>starthere</name>
     <description>Sprint project for Spring Boot</description>
 
     <properties>

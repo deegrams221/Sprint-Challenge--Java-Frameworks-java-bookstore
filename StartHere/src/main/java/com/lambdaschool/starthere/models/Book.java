@@ -21,10 +21,11 @@ import java.util.List;
 
 @Loggable
 @Entity
-@Table(name = "books")
+@Table(name = "book")
 public class Book extends Auditable
 {
-    // Fields
+
+// Fields
 
     // bookid
     // swagger documentation
@@ -42,7 +43,7 @@ public class Book extends Auditable
             required = true,
             example = "Something%20Wicked%20This%20Way%20Comes")
     @Column(nullable = false)
-    private String booktitle;
+    private String title;
 
     // ISBN
     // swagger documentation
@@ -60,91 +61,89 @@ public class Book extends Auditable
             example = "1962")
     private int copy;
 
-    // join author and book columns
-    @ManyToMany
-    @JsonIgnoreProperties(value = "books")
-    @JoinTable(name = "author_book",
-            joinColumns = {
-            @JoinColumn(name = "bookid")},
-            inverseJoinColumns = {
-            @JoinColumn(name = "authorid")})
-    List<Authors> authors = new ArrayList<>();
+
+    @OneToMany(mappedBy = "book",
+            cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("book")
+    private List<Wrote> wrote = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "sectionid")
+    @JsonIgnoreProperties("books")
+    private Section section;
 
     // default constructor
-    public Book()
-    {
+    public Book() {
+
     }
 
     // constructor
-    public Book(String booktitle, String ISBN, int copy, List<Authors> authors, List<UserRoles> userroles)
-    {
-        this.booktitle = booktitle;
+    public Book(String title, String ISBN, Integer copy, Section section) {
+        this.title = title;
         this.ISBN = ISBN;
         this.copy = copy;
-        this.authors = authors;
+        this.section = section;
     }
 
-    // setters and getters
-    public long getBookid()
-    {
+    // getters and setters
+    public long getBookid() {
         return bookid;
     }
 
-    public void setBookid(long bookid)
-    {
+    public void setBookid(long bookid) {
         this.bookid = bookid;
     }
 
-    public String getBooktitle()
-    {
-        return booktitle;
+    public String getTitle() {
+        return title;
     }
 
-    public void setBooktitle(String booktitle)
-    {
-        this.booktitle = booktitle;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getISBN()
-    {
+    public String getISBN() {
         return ISBN;
     }
 
-    public void setISBN(String ISBN)
-    {
+    public void setISBN(String ISBN) {
         this.ISBN = ISBN;
     }
 
-    public int getCopy()
-    {
+    public int getCopy() {
         return copy;
     }
 
-    public void setCopy(int copy)
-    {
+    public void setCopy(Integer copy) {
         this.copy = copy;
     }
 
-    public List<Authors> getAuthors()
-    {
-        return authors;
+    public List<Wrote> getwrote() {
+        return wrote;
     }
 
-    public void setAuthors(List<Authors> authors)
-    {
-        this.authors = authors;
+    public void setwrote(List<Wrote> wrote) {
+        this.wrote = wrote;
+    }
+
+    public Section getSection() {
+        return section;
+    }
+
+    public void setSection(Section section) {
+        this.section = section;
     }
 
     // toString
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "Book{" +
                 "bookid=" + bookid +
-                ", booktitle='" + booktitle + '\'' +
+                ", title='" + title + '\'' +
                 ", ISBN='" + ISBN + '\'' +
                 ", copy=" + copy +
-                ", authors=" + authors +
+                ", wrote=" + wrote +
+                ", section=" + section +
                 '}';
     }
 }
