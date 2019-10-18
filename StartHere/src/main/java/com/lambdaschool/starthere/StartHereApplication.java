@@ -19,6 +19,10 @@ public class StartHereApplication
     private static final Logger logger = LoggerFactory.getLogger(StartHereApplication.class);
     private static boolean stop = false;
 
+//    public static void main(String[] args)
+//    {
+//        SpringApplication.run(StartHereApplication.class, args);
+//    }
     @Autowired
     private static Environment env;
 

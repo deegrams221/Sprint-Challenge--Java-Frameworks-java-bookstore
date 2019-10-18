@@ -56,7 +56,7 @@ public class AuthorController
     {
         // logging
         logger.info(request.getMethod().toUpperCase() + " " + request.getRequestURI() + " accessed");
-        
+
         List<Authors> authorList = authorService.findAll(pageable);
         return new ResponseEntity<>(authorList, HttpStatus.OK);
     }
