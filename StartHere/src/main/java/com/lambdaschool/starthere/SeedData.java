@@ -3,10 +3,9 @@ package com.lambdaschool.starthere;
 import com.github.javafaker.Faker;
 import com.github.javafaker.service.FakeValuesService;
 import com.github.javafaker.service.RandomService;
-import com.lambdaschool.starthere.models.Role;
-import com.lambdaschool.starthere.models.User;
-import com.lambdaschool.starthere.models.UserRoles;
-import com.lambdaschool.starthere.models.Useremail;
+import com.lambdaschool.starthere.models.*;
+import com.lambdaschool.starthere.services.AuthorService;
+import com.lambdaschool.starthere.services.BookService;
 import com.lambdaschool.starthere.services.RoleService;
 import com.lambdaschool.starthere.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
 @Transactional
@@ -26,7 +26,6 @@ public class SeedData implements CommandLineRunner
 
     @Autowired
     UserService userService;
-
 
     @Override
     public void run(String[] args) throws Exception

@@ -6,15 +6,22 @@ import com.lambdaschool.starthere.models.Book;
 import com.lambdaschool.starthere.models.ErrorDetail;
 import com.lambdaschool.starthere.services.BookService;
 import io.swagger.annotations.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 public class BookController
 {
+    // logging
+    private static final Logger logger = LoggerFactory.getLogger(BookController.class);
+
     @Autowired
     private BookService bookService;
 
@@ -40,8 +47,11 @@ public class BookController
 
     // GET /books/books - returns a JSON object list of all the books, thier sections, and their authors.
     @GetMapping(value = "/books/books")
-    public ResponseEntity<?> findAllBooks(Pageable pageable)
+    public ResponseEntity<?> findAllBooks(Pageable pageable, HttpServletRequest request)
     {
+        // logging
+        logger.info(request.getMethod().toUpperCase() + " " + request.getRequestURI() + " accessed");
+
         return new ResponseEntity<>(bookService.findAll(pageable), HttpStatus.OK);
     }
 
@@ -67,8 +77,12 @@ public class BookController
             @PathVariable
                     long id,
             @RequestBody
-                    Book book)
+                    Book book,
+            HttpServletRequest request)
     {
+        // logging
+        logger.info(request.getMethod().toUpperCase() + " " + request.getRequestURI() + " accessed");
+
         bookService.updateBook(book, id);
         return new ResponseEntity<>(book, HttpStatus.OK);
     }
@@ -95,8 +109,12 @@ public class BookController
             @PathVariable
                     long id,
             @RequestBody
-                    Authors authors)
+                    Authors authors,
+            HttpServletRequest request)
     {
+        // logging
+        logger.info(request.getMethod().toUpperCase() + " " + request.getRequestURI() + " accessed");
+
         bookService.assignAuthor(id, authors.getAuthorid());
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -120,8 +138,12 @@ public class BookController
                     required = true,
                     example = "1")
             @PathVariable
-                    long id)
+                    long id,
+            HttpServletRequest request)
     {
+        // logging
+        logger.info(request.getMethod().toUpperCase() + " " + request.getRequestURI() + " accessed");
+
         bookService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
