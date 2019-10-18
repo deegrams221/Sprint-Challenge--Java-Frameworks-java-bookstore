@@ -47,12 +47,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter
             //
             // restrict based on HttpMethod and endpoint
             // .antMatchers(HttpMethod.GET, "/users/user/**").hasAnyRole("USER")
-            .antMatchers("/roles/**",
-                         "/actuator/**")
-            .hasAnyRole("ADMIN")
-            .and()
-            .exceptionHandling()
-            .accessDeniedHandler(new OAuth2AccessDeniedHandler());
+                .antMatchers("/users/**", "/oauth/revoke-token").authenticated()
+                .antMatchers("/roles/**").hasAnyRole("ADMIN", "USER", "DATA")
+                .antMatchers("/books","/authors", "/sections").authenticated()
+                .antMatchers("/data/**").hasAnyRole("DATA","ADMIN")
+                .antMatchers("/actuator/**").hasAnyRole("ADMIN")
+                .and().exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
 
         // http.requiresChannel().anyRequest().requiresSecure(); // required for https
         http.csrf()
